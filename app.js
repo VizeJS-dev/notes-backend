@@ -1,15 +1,25 @@
 const express = require('express');
+const dotenv = require('dotenv');
 const connectDB = require('./config/db');
-const app = express();
-const PORT = process.env.PORT || 5000;
 
-require('dotenv').config();
+// Load environment variables from .env file
+dotenv.config();
 
+// Connect to MongoDB
 connectDB();
 
-app.use(express.json({ extended: false }));
+// Initialize Express
+const app = express();
 
+// Middleware to parse JSON
+app.use(express.json());
+
+// Routes
 app.use('/api/notes', require('./routes/notes'));
 app.use('/api/users', require('./routes/users'));
 
-app.listen(PORT, () => console.log(`Server started on PORT ${PORT}`));
+// Start the server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log(`Server started on PORT ${PORT}`);
+});

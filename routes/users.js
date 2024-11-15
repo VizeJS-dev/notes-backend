@@ -1,9 +1,9 @@
-// routes/users.js
 const express = require('express');
+const { check } = require('express-validator');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const { check } = require('express-validator');
 
+// Register a new user
 router.post(
     '/register',
     [
@@ -14,8 +14,20 @@ router.post(
     userController.registerUser
 );
 
-router.post('/login', userController.loginUser);
+// Login a user
+router.post(
+    '/login',
+    [
+        check('email', 'Please include a valid email').isEmail(),
+        check('password', 'Password is required').exists(),
+    ],
+    userController.loginUser
+);
+
+// Request password reset
 router.post('/reset-password', userController.resetPassword);
-router.put('/reset/:token', userController.updatePassword);
+
+// Update password using reset token
+router.post('/update-password', userController.updatePassword);
 
 module.exports = router;
